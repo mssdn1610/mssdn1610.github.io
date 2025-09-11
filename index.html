@@ -20,15 +20,12 @@
             --light-color: #f8fafc;
             --dark-color: #1e293b;
             --success-color: #10b981;
-            --warning-color: #f59e0b;
-            --error-color: #ef4444;
         }
 
         body {
             background-color: #f1f5f9;
             color: #334155;
             line-height: 1.6;
-            transition: all 0.3s ease;
         }
 
         .container {
@@ -96,58 +93,6 @@
 
         nav ul li a:hover {
             background-color: rgba(255, 255, 255, 0.1);
-        }
-
-        /* 语言选择器 */
-        .language-selector {
-            position: relative;
-            display: inline-block;
-        }
-
-        .language-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .language-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        .language-dropdown {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 100%;
-            background: white;
-            width: 200px;
-            max-height: 300px;
-            overflow-y: auto;
-            border-radius: 4px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            z-index: 1000;
-        }
-
-        .language-dropdown.show {
-            display: block;
-        }
-
-        .language-dropdown a {
-            display: block;
-            padding: 10px 15px;
-            color: #333;
-            text-decoration: none;
-            border-bottom: 1px solid #eee;
-        }
-
-        .language-dropdown a:hover {
-            background-color: #f5f7fa;
         }
 
         /* 英雄区域 */
@@ -231,7 +176,6 @@
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
             transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
         }
 
         .resource-card:hover {
@@ -354,165 +298,6 @@
             font-size: 0.9rem;
         }
 
-        /* 管理员登录模态框 */
-        .admin-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .admin-modal.show {
-            display: flex;
-        }
-
-        .modal-content {
-            background: white;
-            width: 90%;
-            max-width: 400px;
-            border-radius: 8px;
-            padding: 25px;
-            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
-        }
-
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-        }
-
-        .modal-header h3 {
-            color: var(--dark-color);
-        }
-
-        .close-modal {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: #999;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 5px;
-            color: #555;
-            font-weight: 500;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1rem;
-        }
-
-        .login-btn {
-            width: 100%;
-            padding: 12px;
-            background: var(--secondary-color);
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .login-btn:hover {
-            background: #2563eb;
-        }
-
-        /* 管理员控制栏 */
-        .admin-controls {
-            display: none;
-            background: var(--success-color);
-            color: white;
-            padding: 10px 0;
-            position: sticky;
-            top: 70px;
-            z-index: 99;
-        }
-
-        .admin-controls.show {
-            display: block;
-        }
-
-        .controls-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .control-buttons {
-            display: flex;
-            gap: 10px;
-        }
-
-        .control-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: none;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .control-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-        }
-
-        /* 编辑模式样式 */
-        .editable {
-            outline: 2px dashed rgba(59, 130, 246, 0.5);
-            min-height: 30px;
-            padding: 5px;
-            margin: 5px 0;
-            transition: outline-color 0.3s;
-        }
-
-        .editable:hover {
-            outline: 2px dashed var(--secondary-color);
-            background-color: rgba(59, 130, 246, 0.1);
-        }
-
-        .delete-btn {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--error-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-        }
-
-        .resource-card:hover .delete-btn {
-            display: flex;
-        }
-
         /* 响应式设计 */
         @media (max-width: 768px) {
             .header-content {
@@ -540,49 +325,85 @@
             .resources-grid {
                 grid-template-columns: 1fr;
             }
-            
-            .controls-content {
-                flex-direction: column;
-                gap: 10px;
-            }
-            
-            .control-buttons {
-                flex-wrap: wrap;
-                justify-content: center;
-            }
+        }
+
+        /* 搜索框样式 */
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin: 30px 0;
+        }
+
+        .search-box input {
+            padding: 12px 20px;
+            width: 100%;
+            max-width: 500px;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            font-size: 1rem;
+            outline: none;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-box input:focus {
+            border-color: var(--secondary-color);
+        }
+
+        /* 分类筛选 */
+        .category-filter {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 30px;
+        }
+
+        .category-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-btn:hover, .category-btn.active {
+            background: var(--secondary-color);
+            color: white;
+            border-color: var(--secondary-color);
+        }
+
+        /* 统计信息 */
+        .stats {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .stat-item {
+            text-align: center;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            flex: 1;
+            max-width: 200px;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--secondary-color);
+        }
+
+        .stat-text {
+            color: #666;
+            margin-top: 5px;
         }
     </style>
 </head>
 <body>
-    <!-- 管理员控制栏 -->
-    <div class="admin-controls" id="adminControls">
-        <div class="container controls-content">
-            <div>
-                <span><i class="fas fa-crown"></i> 管理员模式</span>
-            </div>
-            <div class="control-buttons">
-                <button class="control-btn" id="addTextBtn">
-                    <i class="fas fa-font"></i> 添加文本
-                </button>
-                <button class="control-btn" id="addImageBtn">
-                    <i class="fas fa-image"></i> 添加图片
-                </button>
-                <button class="control-btn" id="addResourceBtn">
-                    <i class="fas fa-download"></i> 添加资源
-                </button>
-                <button class="control-btn" id="toggleEditBtn">
-                    <i class="fas fa-edit"></i> 切换编辑模式
-                </button>
-                <button class="control-btn" id="saveContentBtn">
-                    <i class="fas fa-save"></i> 保存更改
-                </button>
-                <button class="control-btn" id="logoutBtn">
-                    <i class="fas fa-sign-out-alt"></i> 退出
-                </button>
-            </div>
-        </div>
-    </div>
-
     <!-- 头部 -->
     <header>
         <div class="container header-content">
@@ -597,18 +418,6 @@
                     <li><a href="#">软件工具</a></li>
                     <li><a href="#">教程指南</a></li>
                     <li><a href="#">关于我们</a></li>
-                    <li>
-                        <div class="language-selector">
-                            <button class="language-btn" id="languageBtn">
-                                <i class="fas fa-globe"></i> 语言
-                                <i class="fas fa-chevron-down"></i>
-                            </button>
-                            <div class="language-dropdown" id="languageDropdown">
-                                <!-- 语言选项将通过JS生成 -->
-                            </div>
-                        </div>
-                    </li>
-                    <li><a href="#" id="adminLoginBtn"><i class="fas fa-user-cog"></i> 管理员</a></li>
                 </ul>
             </nav>
         </div>
@@ -617,28 +426,145 @@
     <!-- 英雄区域 -->
     <section class="hero">
         <div class="hero-content">
-            <h2 id="heroTitle" class="editable">高质量电脑系统资源下载</h2>
-            <p id="heroSubtitle" class="editable">我们提供各种操作系统镜像、软件工具和驱动程序，所有资源均经过安全检测，确保无毒无捆绑</p>
+            <h2>高质量电脑系统资源下载</h2>
+            <p>我们提供各种操作系统镜像、软件工具和驱动程序，所有资源均经过安全检测，确保无毒无捆绑</p>
         </div>
     </section>
 
     <!-- 主要内容 -->
     <main class="main-content">
         <div class="container">
+            <!-- 统计信息 -->
+            <div class="stats">
+                <div class="stat-item">
+                    <div class="stat-number">128</div>
+                    <div class="stat-text">系统镜像</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">56</div>
+                    <div class="stat-text">软件工具</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">24,589</div>
+                    <div class="stat-text">今日下载</div>
+                </div>
+            </div>
+
+            <!-- 搜索框 -->
+            <div class="search-box">
+                <input type="text" placeholder="搜索系统镜像或软件工具...">
+            </div>
+
+            <!-- 分类筛选 -->
+            <div class="category-filter">
+                <button class="category-btn active">全部</button>
+                <button class="category-btn">Windows</button>
+                <button class="category-btn">Linux</button>
+                <button class="category-btn">macOS</button>
+                <button class="category-btn">工具软件</button>
+                <button class="category-btn">驱动程序</button>
+            </div>
+
             <div class="section-title">
-                <h2 id="resourcesTitle" class="editable">热门系统镜像</h2>
+                <h2>热门系统镜像</h2>
             </div>
 
-            <div class="resources-grid" id="resourcesContainer">
-                <!-- 资源卡片将通过JS动态生成 -->
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-img">
+                        <img src="https://images.unsplash.com/photo-1563207153-f403bf289096?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Windows 11">
+                    </div>
+                    <div class="resource-content">
+                        <h3>Windows 11 专业版</h3>
+                        <p>最新版本的Windows操作系统，提供更好的性能和安全特性。</p>
+                        <div class="info">
+                            <span>大小: 5.2 GB</span>
+                            <span>下载量: 12,458</span>
+                        </div>
+                        <a href="#" class="download-btn">下载</a>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-img">
+                        <img src="https://images.unsplash.com/photo-1611258623151-991cacbafa1e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Ubuntu">
+                    </div>
+                    <div class="resource-content">
+                        <h3>Ubuntu 22.04 LTS</h3>
+                        <p>最流行的Linux发行版之一，稳定且用户友好。</p>
+                        <div class="info">
+                            <span>大小: 4.7 GB</span>
+                            <span>下载量: 8,742</span>
+                        </div>
+                        <a href="#" class="download-btn">下载</a>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-img">
+                        <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="macOS">
+                    </div>
+                    <div class="resource-content">
+                        <h3>macOS Monterey</h3>
+                        <p>苹果公司推出的桌面操作系统，专为创意工作优化。</p>
+                        <div class="info">
+                            <span>大小: 12.3 GB</span>
+                            <span>下载量: 6,321</span>
+                        </div>
+                        <a href="#" class="download-btn">下载</a>
+                    </div>
+                </div>
             </div>
 
             <div class="section-title">
-                <h2 id="softwareTitle" class="editable">实用软件工具</h2>
+                <h2>实用软件工具</h2>
             </div>
 
-            <div class="resources-grid" id="softwareContainer">
-                <!-- 软件卡片将通过JS动态生成 -->
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-img">
+                        <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Office">
+                    </div>
+                    <div class="resource-content">
+                        <h3>Microsoft Office 2021</h3>
+                        <p>最新的办公软件套件，包含Word、Excel、PowerPoint等。</p>
+                        <div class="info">
+                            <span>大小: 3.8 GB</span>
+                            <span>下载量: 9,654</span>
+                        </div>
+                        <a href="#" class="download-btn">下载</a>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-img">
+                        <img src="https://images.unsplash.com/photo-1618060932014-4dedf6bce8c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Photoshop">
+                    </div>
+                    <div class="resource-content">
+                        <h3>Adobe Photoshop 2022</h3>
+                        <p>行业标准的图像编辑和合成软件。</p>
+                        <div class="info">
+                            <span>大小: 2.9 GB</span>
+                            <span>下载量: 7,832</span>
+                        </div>
+                        <a href="#" class="download-btn">下载</a>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-img">
+                        <img src="https://images.unsplash.com/photo-1634942536746-46b9a6de1ce8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Visual Studio Code">
+                    </div>
+                    <div class="resource-content">
+                        <h3>Visual Studio Code</h3>
+                        <p>轻量级但功能强大的源代码编辑器。</p>
+                        <div class="info">
+                            <span>大小: 85 MB</span>
+                            <span>下载量: 15,247</span>
+                        </div>
+                        <a href="#" class="download-btn">下载</a>
+                    </div>
+                </div>
             </div>
 
             <div class="author-section">
@@ -666,395 +592,34 @@
         </div>
     </footer>
 
-    <!-- 管理员登录模态框 -->
-    <div class="admin-modal" id="adminModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>管理员登录</h3>
-                <button class="close-modal" id="closeModal">&times;</button>
-            </div>
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="username">用户名</label>
-                    <input type="text" id="username" placeholder="输入管理员用户名" required>
-                </div>
-                <div class="form-group">
-                    <label for="password">密码</label>
-                    <input type="password" id="password" placeholder="输入管理员密码" required>
-                </div>
-                <button type="submit" class="login-btn">登录</button>
-            </form>
-        </div>
-    </div>
-
     <script>
-        // 网站数据
-        const siteData = {
-            resources: [
-                {
-                    id: 1,
-                    title: "Windows 11 专业版",
-                    description: "最新版本的Windows操作系统，提供更好的性能和安全特性。",
-                    image: "https://images.unsplash.com/photo-1563207153-f403bf289096?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-                    downloadLink: "#"
-                },
-                {
-                    id: 2,
-                    title: "Ubuntu 22.04 LTS",
-                    description: "最流行的Linux发行版之一，稳定且用户友好。",
-                    image: "https://images.unsplash.com/photo-1611258623151-991cacbafa1e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-                    downloadLink: "#"
-                },
-                {
-                    id: 3,
-                    title: "macOS Monterey",
-                    description: "苹果公司推出的桌面操作系统，专为创意工作优化。",
-                    image: "https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-                    downloadLink: "#"
-                }
-            ],
-            software: [
-                {
-                    id: 1,
-                    title: "Microsoft Office 2021",
-                    description: "最新的办公软件套件，包含Word、Excel、PowerPoint等。",
-                    image: "https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-                    downloadLink: "#"
-                },
-                {
-                    id: 2,
-                    title: "Adobe Photoshop 2022",
-                    description: "行业标准的图像编辑和合成软件。",
-                    image: "https://images.unsplash.com/photo-1618060932014-4dedf6bce8c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-                    downloadLink: "#"
-                },
-                {
-                    id: 3,
-                    title: "Visual Studio Code",
-                    description: "轻量级但功能强大的源代码编辑器。",
-                    image: "https://images.unsplash.com/photo-1634942536746-46b9a6de1ce8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80",
-                    downloadLink: "#"
-                }
-            ]
-        };
-
-        // 语言数据
-        const languages = [
-            { code: "zh", name: "中文", flag: "🇨🇳" },
-            { code: "en", name: "English", flag: "🇺🇸" },
-            { code: "es", name: "Español", flag: "🇪🇸" },
-            { code: "fr", name: "Français", flag: "🇫🇷" },
-            { code: "de", name: "Deutsch", flag: "🇩🇪" },
-            { code: "ja", name: "日本語", flag: "🇯🇵" },
-            { code: "ru", name: "Русский", flag: "🇷🇺" },
-            { code: "pt", name: "Português", flag: "🇵🇹" },
-            { code: "it", name: "Italiano", flag: "🇮🇹" },
-            { code: "ar", name: "العربية", flag: "🇸🇦" },
-            { code: "hi", name: "हिन्दी", flag: "🇮🇳" },
-            { code: "ko", name: "한국어", flag: "🇰🇷" },
-            { code: "tr", name: "Türkçe", flag: "🇹🇷" },
-            { code: "vi", name: "Tiếng Việt", flag: "🇻🇳" },
-            { code: "nl", name: "Nederlands", flag: "🇳🇱" }
-        ];
-
-        // 初始化函数
-        function init() {
-            // 生成语言选项
-            generateLanguageOptions();
+        // 简单的分类筛选功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryButtons = document.querySelectorAll('.category-btn');
             
-            // 渲染资源卡片
-            renderResources();
-            
-            // 设置事件监听器
-            setupEventListeners();
-            
-            // 从本地存储加载数据
-            loadFromLocalStorage();
-        }
-
-        // 生成语言选项
-        function generateLanguageOptions() {
-            const languageDropdown = document.getElementById('languageDropdown');
-            languageDropdown.innerHTML = '';
-            
-            languages.forEach(lang => {
-                const link = document.createElement('a');
-                link.href = '#';
-                link.innerHTML = `${lang.flag} ${lang.name}`;
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    changeLanguage(lang.code);
-                    languageDropdown.classList.remove('show');
+            categoryButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // 移除所有按钮的active类
+                    categoryButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // 为当前点击的按钮添加active类
+                    this.classList.add('active');
+                    
+                    // 这里可以添加实际筛选逻辑
+                    // 在实际应用中，这里会根据分类筛选显示不同的内容
                 });
-                languageDropdown.appendChild(link);
-            });
-        }
-
-        // 更改语言
-        function changeLanguage(langCode) {
-            // 在实际应用中，这里会加载对应语言的文件
-            // 这里仅做演示
-            alert(`已切换到: ${languages.find(l => l.code === langCode)?.name || '未知语言'}`);
-        }
-
-        // 渲染资源卡片
-        function renderResources() {
-            const resourcesContainer = document.getElementById('resourcesContainer');
-            const softwareContainer = document.getElementById('softwareContainer');
-            
-            resourcesContainer.innerHTML = '';
-            softwareContainer.innerHTML = '';
-            
-            // 渲染系统资源
-            siteData.resources.forEach(resource => {
-                resourcesContainer.appendChild(createResourceCard(resource));
             });
             
-            // 渲染软件资源
-            siteData.software.forEach(software => {
-                softwareContainer.appendChild(createResourceCard(software));
-            });
-        }
-
-        // 创建资源卡片
-        function createResourceCard(item) {
-            const card = document.createElement('div');
-            card.className = 'resource-card';
-            card.dataset.id = item.id;
-            card.dataset.type = item.type || 'resource';
-            
-            card.innerHTML = `
-                <div class="resource-img">
-                    <img src="${item.image}" alt="${item.title}">
-                </div>
-                <div class="resource-content">
-                    <h3 class="editable">${item.title}</h3>
-                    <p class="editable">${item.description}</p>
-                    <a href="${item.downloadLink}" class="download-btn">下载</a>
-                </div>
-                <button class="delete-btn" data-id="${item.id}">
-                    <i class="fas fa-trash"></i>
-                </button>
-            `;
-            
-            return card;
-        }
-
-        // 设置事件监听器
-        function setupEventListeners() {
-            const languageBtn = document.getElementById('languageBtn');
-            const languageDropdown = document.getElementById('languageDropdown');
-            const adminModal = document.getElementById('adminModal');
-            const adminLoginBtn = document.getElementById('adminLoginBtn');
-            const closeModal = document.getElementById('closeModal');
-            const loginForm = document.getElementById('loginForm');
-            const adminControls = document.getElementById('adminControls');
-            const logoutBtn = document.getElementById('logoutBtn');
-            const addTextBtn = document.getElementById('addTextBtn');
-            const addImageBtn = document.getElementById('addImageBtn');
-            const addResourceBtn = document.getElementById('addResourceBtn');
-            const toggleEditBtn = document.getElementById('toggleEditBtn');
-            const saveContentBtn = document.getElementById('saveContentBtn');
-            
-            // 语言选择器
-            languageBtn.addEventListener('click', function() {
-                languageDropdown.classList.toggle('show');
-            });
-            
-            // 关闭语言下拉框
-            window.addEventListener('click', function(e) {
-                if (!e.target.matches('.language-btn') && !e.target.closest('.language-selector')) {
-                    languageDropdown.classList.remove('show');
+            // 搜索功能
+            const searchInput = document.querySelector('.search-box input');
+            searchInput.addEventListener('keyup', function(e) {
+                if (e.key === 'Enter') {
+                    // 这里可以添加实际搜索逻辑
+                    alert(`搜索关键词: ${this.value}`);
+                    this.value = '';
                 }
             });
-            
-            // 管理员登录
-            adminLoginBtn.addEventListener('click', function(e) {
-                e.preventDefault();
-                adminModal.classList.add('show');
-            });
-            
-            closeModal.addEventListener('click', function() {
-                adminModal.classList.remove('show');
-            });
-            
-            loginForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const username = document.getElementById('username').value;
-                const password = document.getElementById('password').value;
-                
-                if (username === 'mssdn' && password === 'jiganghui010240') {
-                    adminControls.classList.add('show');
-                    adminModal.classList.remove('show');
-                    enableEditMode();
-                    alert('登录成功！您现在可以编辑网站内容。');
-                } else {
-                    alert('用户名或密码错误！');
-                }
-            });
-            
-            // 退出管理员模式
-            logoutBtn.addEventListener('click', function() {
-                adminControls.classList.remove('show');
-                disableEditMode();
-                alert('已退出管理员模式。');
-            });
-            
-            // 添加文本
-            addTextBtn.addEventListener('click', function() {
-                const text = prompt('请输入要添加的文本：');
-                if (text) {
-                    const newTextElement = document.createElement('p');
-                    newTextElement.className = 'editable';
-                    newTextElement.contentEditable = true;
-                    newTextElement.textContent = text;
-                    
-                    // 添加到资源区域前
-                    const resourcesTitle = document.getElementById('resourcesTitle');
-                    resourcesTitle.parentNode.insertBefore(newTextElement, resourcesTitle.nextSibling);
-                    
-                    alert('文本已添加！');
-                }
-            });
-            
-            // 添加图片
-            addImageBtn.addEventListener('click', function() {
-                const imageUrl = prompt('请输入图片URL：');
-                if (imageUrl) {
-                    const newImageElement = document.createElement('div');
-                    newImageElement.className = 'editable';
-                    newImageElement.innerHTML = `<img src="${imageUrl}" alt="新增图片" style="max-width: 100%; height: auto;">`;
-                    
-                    // 添加到资源区域前
-                    const resourcesTitle = document.getElementById('resourcesTitle');
-                    resourcesTitle.parentNode.insertBefore(newImageElement, resourcesTitle.nextSibling);
-                    
-                    alert('图片已添加！');
-                }
-            });
-            
-            // 添加资源
-            addResourceBtn.addEventListener('click', function() {
-                const title = prompt('请输入资源标题：');
-                const description = prompt('请输入资源描述：');
-                const imageUrl = prompt('请输入图片URL：');
-                const downloadLink = prompt('请输入下载链接：');
-                
-                if (title && description && imageUrl && downloadLink) {
-                    const newResource = {
-                        id: Date.now(),
-                        title,
-                        description,
-                        image: imageUrl,
-                        downloadLink
-                    };
-                    
-                    siteData.resources.push(newResource);
-                    const resourcesContainer = document.getElementById('resourcesContainer');
-                    resourcesContainer.appendChild(createResourceCard(newResource));
-                    
-                    alert('资源已添加！');
-                }
-            });
-            
-            // 切换编辑模式
-            toggleEditBtn.addEventListener('click', function() {
-                const editables = document.querySelectorAll('.editable');
-                const isEditing = editables[0]?.contentEditable === 'true';
-                
-                if (isEditing) {
-                    disableEditMode();
-                    alert('已退出编辑模式！');
-                } else {
-                    enableEditMode();
-                    alert('已进入编辑模式，您可以点击任何内容进行编辑！');
-                }
-            });
-            
-            // 保存内容
-            saveContentBtn.addEventListener('click', function() {
-                saveToLocalStorage();
-                alert('内容已保存到本地存储！');
-            });
-            
-            // 删除功能
-            document.addEventListener('click', function(e) {
-                if (e.target.classList.contains('delete-btn') || e.target.parentElement.classList.contains('delete-btn')) {
-                    const deleteBtn = e.target.classList.contains('delete-btn') ? e.target : e.target.parentElement;
-                    const id = deleteBtn.dataset.id;
-                    
-                    if (confirm('确定要删除这个项目吗？')) {
-                        const card = deleteBtn.closest('.resource-card');
-                        if (card) {
-                            card.remove();
-                            
-                            // 从数据中删除
-                            const resourceIndex = siteData.resources.findIndex(r => r.id == id);
-                            if (resourceIndex !== -1) {
-                                siteData.resources.splice(resourceIndex, 1);
-                            }
-                            
-                            const softwareIndex = siteData.software.findIndex(s => s.id == id);
-                            if (softwareIndex !== -1) {
-                                siteData.software.splice(softwareIndex, 1);
-                            }
-                            
-                            alert('项目已删除！');
-                        }
-                    }
-                }
-            });
-        }
-
-        // 启用编辑模式
-        function enableEditMode() {
-            const editables = document.querySelectorAll('.editable');
-            editables.forEach(el => {
-                el.contentEditable = true;
-            });
-            
-            const deleteButtons = document.querySelectorAll('.delete-btn');
-            deleteButtons.forEach(btn => {
-                btn.style.display = 'flex';
-            });
-            
-            document.getElementById('toggleEditBtn').innerHTML = '<i class="fas fa-edit"></i> 退出编辑模式';
-        }
-
-        // 禁用编辑模式
-        function disableEditMode() {
-            const editables = document.querySelectorAll('.editable');
-            editables.forEach(el => {
-                el.contentEditable = false;
-            });
-            
-            const deleteButtons = document.querySelectorAll('.delete-btn');
-            deleteButtons.forEach(btn => {
-                btn.style.display = 'none';
-            });
-            
-            document.getElementById('toggleEditBtn').innerHTML = '<i class="fas fa-edit"></i> 切换编辑模式';
-        }
-
-        // 保存到本地存储
-        function saveToLocalStorage() {
-            // 在实际应用中，这里会保存到服务器
-            // 这里仅保存到本地存储作为演示
-            localStorage.setItem('mssdnSiteData', JSON.stringify(siteData));
-        }
-
-        // 从本地存储加载
-        function loadFromLocalStorage() {
-            const savedData = localStorage.getItem('mssdnSiteData');
-            if (savedData) {
-                const parsedData = JSON.parse(savedData);
-                Object.assign(siteData, parsedData);
-                renderResources();
-            }
-        }
-
-        // 初始化网站
-        document.addEventListener('DOMContentLoaded', init);
+        });
     </script>
 </body>
 </html>
