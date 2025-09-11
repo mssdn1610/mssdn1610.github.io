@@ -1,1 +1,776 @@
-<h1>mssdn web</h1>
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>木薯说电脑资源分享网站</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-color: #ecf0f1;
+            --dark-color: #2c3e50;
+            --success-color: #2ecc71;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        /* 头部样式 */
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: white;
+            padding: 15px 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .logo span {
+            color: #ffcc00;
+        }
+
+        /* 导航样式 */
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+
+        nav ul li {
+            margin-left: 20px;
+        }
+
+        nav ul li a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+        nav ul li a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        /* 语言选择器 */
+        .language-selector {
+            position: relative;
+            display: inline-block;
+        }
+
+        .language-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .language-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .language-dropdown {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 100%;
+            background: white;
+            width: 200px;
+            max-height: 300px;
+            overflow-y: auto;
+            border-radius: 4px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+        }
+
+        .language-dropdown.show {
+            display: block;
+        }
+
+        .language-dropdown a {
+            display: block;
+            padding: 10px 15px;
+            color: #333;
+            text-decoration: none;
+            border-bottom: 1px solid #eee;
+        }
+
+        .language-dropdown a:hover {
+            background-color: #f5f7fa;
+        }
+
+        /* 英雄区域 */
+        .hero {
+            background: url('https://images.unsplash.com/photo-1547082299-de196ea013d6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+            height: 450px;
+            display: flex;
+            align-items: center;
+            color: white;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+        }
+
+        .hero-content {
+            position: relative;
+            width: 100%;
+            padding: 0 20px;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 30px;
+        }
+
+        /* 内容区域 */
+        .main-content {
+            padding: 50px 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 40px;
+            color: var(--dark-color);
+        }
+
+        .section-title h2 {
+            font-size: 2rem;
+            position: relative;
+            display: inline-block;
+            padding-bottom: 10px;
+        }
+
+        .section-title h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background: var(--secondary-color);
+        }
+
+        /* 资源网格 */
+        .resources-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .resource-card {
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .resource-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+        }
+
+        .resource-img {
+            height: 180px;
+            overflow: hidden;
+        }
+
+        .resource-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s;
+        }
+
+        .resource-card:hover .resource-img img {
+            transform: scale(1.05);
+        }
+
+        .resource-content {
+            padding: 20px;
+        }
+
+        .resource-content h3 {
+            margin-bottom: 10px;
+            color: var(--dark-color);
+        }
+
+        .resource-content p {
+            color: #666;
+            margin-bottom: 15px;
+            font-size: 0.9rem;
+        }
+
+        .download-btn {
+            display: inline-block;
+            background: var(--secondary-color);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .download-btn:hover {
+            background: #2980b9;
+        }
+
+        /* 作者信息 */
+        .author-section {
+            text-align: center;
+            padding: 30px 0;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 50px;
+        }
+
+        .author-section h3 {
+            color: var(--dark-color);
+            margin-bottom: 15px;
+        }
+
+        .author-link {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .author-link:hover {
+            text-decoration: underline;
+        }
+
+        /* 页脚 */
+        footer {
+            background: var(--dark-color);
+            color: white;
+            padding: 30px 0;
+            text-align: center;
+        }
+
+        .footer-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .footer-logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+
+        .footer-links {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .footer-links a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .footer-links a:hover {
+            color: white;
+        }
+
+        .copyright {
+            color: #aaa;
+            font-size: 0.9rem;
+        }
+
+        /* 管理员登录模态框 */
+        .admin-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .admin-modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 8px;
+            padding: 25px;
+            box-shadow: 0 5px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h3 {
+            color: var(--dark-color);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #999;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            color: #555;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 1rem;
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--secondary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .login-btn:hover {
+            background: #2980b9;
+        }
+
+        /* 管理员控制栏 */
+        .admin-controls {
+            display: none;
+            background: var(--success-color);
+            color: white;
+            padding: 10px 0;
+            position: sticky;
+            top: 70px;
+            z-index: 99;
+        }
+
+        .admin-controls.show {
+            display: block;
+        }
+
+        .controls-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .control-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .control-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .control-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* 响应式设计 */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            nav ul {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            nav ul li {
+                margin: 5px 10px;
+            }
+
+            .hero h2 {
+                font-size: 2rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .resources-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 管理员控制栏 -->
+    <div class="admin-controls" id="adminControls">
+        <div class="container controls-content">
+            <div>
+                <span>管理员模式</span>
+            </div>
+            <div class="control-buttons">
+                <button class="control-btn" id="addTextBtn">
+                    <i class="fas fa-font"></i> 添加文本
+                </button>
+                <button class="control-btn" id="addImageBtn">
+                    <i class="fas fa-image"></i> 添加图片
+                </button>
+                <button class="control-btn" id="saveContentBtn">
+                    <i class="fas fa-save"></i> 保存更改
+                </button>
+                <button class="control-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> 退出
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 头部 -->
+    <header>
+        <div class="container header-content">
+            <div class="logo">
+                <h1>木薯说<span>资源分享</span></h1>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="#" class="active">首页</a></li>
+                    <li><a href="#">系统镜像</a></li>
+                    <li><a href="#">软件工具</a></li>
+                    <li><a href="#">教程指南</a></li>
+                    <li><a href="#">关于我们</a></li>
+                    <li>
+                        <div class="language-selector">
+                            <button class="language-btn" id="languageBtn">
+                                <i class="fas fa-globe"></i> 语言
+                                <i class="fas fa-chevron-down"></i>
+                            </button>
+                            <div class="language-dropdown" id="languageDropdown">
+                                <!-- 语言选项将通过JS生成 -->
+                            </div>
+                        </div>
+                    </li>
+                    <li><a href="#" id="adminLoginBtn">管理员登录</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- 英雄区域 -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>高质量电脑系统资源下载</h2>
+            <p>我们提供各种操作系统镜像、软件工具和驱动程序，所有资源均经过安全检测，确保无毒无捆绑</p>
+        </div>
+    </section>
+
+    <!-- 主要内容 -->
+    <main class="main-content">
+        <div class="container">
+            <div class="section-title">
+                <h2>热门系统镜像</h2>
+            </div>
+
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-img">
+                        <img src="https://images.unsplash.com/photo-1563207153-f403bf289096?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Windows 11">
+                    </div>
+                    <div class="resource-content">
+                        <h3>Windows 11 专业版</h3>
+                        <p>最新版本的Windows操作系统，提供更好的性能和安全特性。</p>
+                        <a href="#" class="download-btn">下载</a>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-img">
+                        <img src="https://images.unsplash.com/photo-1611258623151-991cacbafa1e?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Ubuntu">
+                    </div>
+                    <div class="resource-content">
+                        <h3>Ubuntu 22.04 LTS</h3>
+                        <p>最流行的Linux发行版之一，稳定且用户友好。</p>
+                        <a href="#" class="download-btn">下载</a>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-img">
+                        <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="macOS">
+                    </div>
+                    <div class="resource-content">
+                        <h3>macOS Monterey</h3>
+                        <p>苹果公司推出的桌面操作系统，专为创意工作优化。</p>
+                        <a href="#" class="download-btn">下载</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="section-title">
+                <h2>实用软件工具</h2>
+            </div>
+
+            <div class="resources-grid">
+                <div class="resource-card">
+                    <div class="resource-img">
+                        <img src="https://images.unsplash.com/photo-1611162617213-7d7a39e9b1d7?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Office">
+                    </div>
+                    <div class="resource-content">
+                        <h3>Microsoft Office 2021</h3>
+                        <p>最新的办公软件套件，包含Word、Excel、PowerPoint等。</p>
+                        <a href="#" class="download-btn">下载</a>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-img">
+                        <img src="https://images.unsplash.com/photo-1618060932014-4dedf6bce8c2?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Photoshop">
+                    </div>
+                    <div class="resource-content">
+                        <h3>Adobe Photoshop 2022</h3>
+                        <p>行业标准的图像编辑和合成软件。</p>
+                        <a href="#" class="download-btn">下载</a>
+                    </div>
+                </div>
+
+                <div class="resource-card">
+                    <div class="resource-img">
+                        <img src="https://images.unsplash.com/photo-1634942536746-46b9a6de1ce8?ixlib=rb-4.0.3&auto=format&fit=crop&w=600&q=80" alt="Visual Studio Code">
+                    </div>
+                    <div class="resource-content">
+                        <h3>Visual Studio Code</h3>
+                        <p>轻量级但功能强大的源代码编辑器。</p>
+                        <a href="#" class="download-btn">下载</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="author-section">
+                <h3>作者</h3>
+                <a href="https://www.douyin.com/user/MS4wLjABAAAAkQ1RENeIcWDdHIWJAnA3ql-mAiTYzI6iyZKnB3XsJtckAvnX0s8v2bi9hQmQ_j3F?from_tab_name=main" class="author-link" target="_blank">
+                    <i class="fab fa-douyin"></i> 访问我的抖音主页
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- 页脚 -->
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-logo">木薯说资源分享</div>
+            <div class="footer-links">
+                <a href="#">关于我们</a>
+                <a href="#">使用条款</a>
+                <a href="#">隐私政策</a>
+                <a href="#">联系我们</a>
+            </div>
+            <div class="copyright">
+                &copy; 2023 木薯说电脑资源分享网站. 保留所有权利.
+            </div>
+        </div>
+    </footer>
+
+    <!-- 管理员登录模态框 -->
+    <div class="admin-modal" id="adminModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>管理员登录</h3>
+                <button class="close-modal" id="closeModal">&times;</button>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="username">用户名</label>
+                    <input type="text" id="username" placeholder="输入管理员用户名" required>
+                </div>
+                <div class="form-group">
+                    <label for="password">密码</label>
+                    <input type="password" id="password" placeholder="输入管理员密码" required>
+                </div>
+                <button type="submit" class="login-btn">登录</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 语言选择功能
+        document.addEventListener('DOMContentLoaded', function() {
+            const languageBtn = document.getElementById('languageBtn');
+            const languageDropdown = document.getElementById('languageDropdown');
+            
+            // 生成语言选项（示例）
+            const languages = [
+                "中文", "English", "Español", "Français", "Deutsch", 
+                "日本語", "Русский", "Português", "Italiano", "العربية",
+                "हिन्दी", "한국어", "Türkçe", "Tiếng Việt", "Nederlands"
+            ];
+            
+            languages.forEach(lang => {
+                const link = document.createElement('a');
+                link.href = '#';
+                link.textContent = lang;
+                languageDropdown.appendChild(link);
+            });
+            
+            languageBtn.addEventListener('click', function() {
+                languageDropdown.classList.toggle('show');
+            });
+            
+            // 关闭语言下拉框
+            window.addEventListener('click', function(e) {
+                if (!e.target.matches('.language-btn') && !e.target.closest('.language-selector')) {
+                    languageDropdown.classList.remove('show');
+                }
+            });
+            
+            // 管理员登录功能
+            const adminModal = document.getElementById('adminModal');
+            const adminLoginBtn = document.getElementById('adminLoginBtn');
+            const closeModal = document.getElementById('closeModal');
+            const loginForm = document.getElementById('loginForm');
+            const adminControls = document.getElementById('adminControls');
+            
+            adminLoginBtn.addEventListener('click', function(e) {
+                e.preventDefault();
+                adminModal.classList.add('show');
+            });
+            
+            closeModal.addEventListener('click', function() {
+                adminModal.classList.remove('show');
+            });
+            
+            loginForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const username = document.getElementById('username').value;
+                const password = document.getElementById('password').value;
+                
+                if (username === 'mssdn' && password === 'jiganghui010240') {
+                    adminControls.classList.add('show');
+                    adminModal.classList.remove('show');
+                    alert('登录成功！您现在可以编辑网站内容。');
+                } else {
+                    alert('用户名或密码错误！');
+                }
+            });
+            
+            // 退出管理员模式
+            const logoutBtn = document.getElementById('logoutBtn');
+            
+            logoutBtn.addEventListener('click', function() {
+                adminControls.classList.remove('show');
+                alert('已退出管理员模式。');
+            });
+            
+            // 管理员编辑功能（简化示例）
+            const addTextBtn = document.getElementById('addTextBtn');
+            const addImageBtn = document.getElementById('addImageBtn');
+            const saveContentBtn = document.getElementById('saveContentBtn');
+            
+            addTextBtn.addEventListener('click', function() {
+                const text = prompt('请输入要添加的文本：');
+                if (text) {
+                    alert(`添加文本: ${text}\n（在实际应用中，这里会真正添加文本到页面）`);
+                }
+            });
+            
+            addImageBtn.addEventListener('click', function() {
+                alert('打开图片上传功能\n（在实际应用中，这里会打开文件选择器以上传图片）');
+            });
+            
+            saveContentBtn.addEventListener('click', function() {
+                alert('内容已保存！\n（在实际应用中，这里会将更改保存到服务器）');
+            });
+        });
+    </script>
+</body>
+</html>
