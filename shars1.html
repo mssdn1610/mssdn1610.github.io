@@ -222,7 +222,7 @@
             button.addEventListener('click', function(e) {
                 e.preventDefault();
                 const service = this.parentElement.querySelector('h2').textContent;
-                alert(`您选择了${service}下载服务，即将开始下载`);
+                alert(`您选择了${service}下载服务，请在您选择下载的按钮上，鼠标右键，选择“在新标签页中打开链接”);
                 
                 // 在实际应用中，这里可以添加实际的文件下载链接
                 // window.location.href = '您的实际下载链接';
