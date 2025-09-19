@@ -136,11 +136,11 @@
                 <div class="system-info">
                     <div class="system-icon">W</div>
                     <div>
-                        <div class="system-name">Windows 11 专业版</div>
-                        <div class="system-details">64位 | 版本 22H2 | 大小: 5.2 GB</div>
+                        <div class="system-name">Windows 11</div>
+                        <div class="system-details">大小: 5.2 GB</div>
                     </div>
                 </div>
-                <a href="#" class="download-btn">下载</a>
+                <a href="/shars1" class="download-btn">下载</a>
             </li>
             
             <li class="download-item">
@@ -200,22 +200,9 @@
         </ul>
         
         <footer>
-            <p>© 2023 系统镜像下载中心 | 公开网站</p>
+            <p>© 2023 木薯说电脑系统镜像下载中心 | 公开网站</p>
         </footer>
     </div>
 
-    <script>
-        // 添加简单的下载提示
-        document.querySelectorAll('.download-btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                const systemName = this.closest('.download-item').querySelector('.system-name').textContent;
-                alert(`即将开始下载: ${systemName}\n注意：实际使用时请替换为真实下载链接`);
-                
-                // 在实际应用中，这里可以添加实际的文件下载代码
-                // window.location.href = '您的实际下载链接';
-            });
-        });
-    </script>
 </body>
 </html>
