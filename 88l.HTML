@@ -1,0 +1,973 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>八（8）班 · 随机点名</title>
+<style>
+  :root{ --a1:#ffd479; --a2:#ff8a4c; }
+  *{ box-sizing:border-box; }
+  [hidden]{ display:none !important; }
+  html,body{ min-height:100%; }
+  body{
+    margin:0; padding:30px 16px 70px;
+    font-family:"PingFang SC","Microsoft YaHei",system-ui,-apple-system,sans-serif;
+    color:#eef2ff;
+    background:
+      radial-gradient(1000px 620px at 12% -12%, rgba(99,102,241,.38), transparent 62%),
+      radial-gradient(900px 600px at 88% -6%, rgba(236,72,153,.26), transparent 58%),
+      #0b1020;
+    background-attachment:fixed;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{ max-width:1040px; margin:0 auto; }
+
+  /* ── 头部 ── */
+  .head{ text-align:center; margin-bottom:22px; }
+  .head h1{
+    margin:0; font-weight:900; letter-spacing:.16em;
+    font-size:clamp(22px,3.4vw,34px);
+    background:linear-gradient(180deg,#ffffff,#ffd9a0);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+  }
+  .head .sub{ margin:12px 0 0; font-size:14px; letter-spacing:.14em; color:rgba(255,255,255,.45); }
+  .head .sub b{ color:var(--a1); font-size:16px; }
+
+  /* ── 主页操作按钮 ── */
+  .home-actions{
+    display:flex; justify-content:center; gap:14px; flex-wrap:wrap;
+    margin:0 auto 28px; max-width:840px;
+  }
+  .home-btn{
+    padding:13px 36px; border-radius:14px; font-family:inherit; font-size:16px;
+    font-weight:800; letter-spacing:.14em; cursor:pointer; transition:.18s;
+    border:1px solid rgba(255,255,255,.2); background:rgba(255,255,255,.05);
+    color:rgba(255,255,255,.8);
+  }
+  .home-btn:hover{ background:rgba(255,255,255,.12); color:#fff; transform:translateY(-2px); }
+  .home-btn:active{ transform:translateY(0) scale(.99); }
+  .home-btn.primary{
+    border-color:transparent; color:#2a1400;
+    background:linear-gradient(135deg,#ffd479,#ff8a4c);
+    box-shadow:0 12px 28px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.6);
+  }
+  .home-btn.primary:hover{ filter:brightness(1.07); }
+
+  /* ── 科目选择 ── */
+  .subjects{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:16px; max-width:840px; margin:0 auto;
+  }
+  .subject-card{
+    position:relative; padding:28px 22px; border-radius:22px; overflow:hidden;
+    border:1px solid rgba(255,255,255,.14); background:rgba(255,255,255,.05);
+    font-family:inherit; color:#fff; text-align:left; cursor:pointer;
+    transition:transform .2s, border-color .2s, box-shadow .2s;
+  }
+  .subject-card::before{
+    content:""; position:absolute; inset:0; opacity:.14;
+    background:linear-gradient(135deg,var(--c1),var(--c2)); transition:opacity .25s;
+  }
+  .subject-card:hover{ transform:translateY(-4px); border-color:rgba(255,255,255,.34);
+    box-shadow:0 20px 44px rgba(0,0,0,.42); }
+  .subject-card:hover::before{ opacity:.34; }
+  .subject-card:active{ transform:translateY(-1px) scale(.99); }
+  .s-name{ position:relative; font-size:26px; font-weight:900; letter-spacing:.12em; }
+  .s-meta{ position:relative; margin-top:12px; font-size:13px; letter-spacing:.04em;
+    color:rgba(255,255,255,.75); font-variant-numeric:tabular-nums; line-height:1.7; }
+
+  /* ── 顶栏 ── */
+  .topbar{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-bottom:20px; }
+  .cur-subject{
+    flex:1; text-align:center; font-size:20px; font-weight:900; letter-spacing:.3em;
+    color:#fff; text-shadow:0 0 30px rgba(255,255,255,.25);
+  }
+  .ghost{
+    padding:10px 18px; border-radius:12px; font-family:inherit; font-size:14px;
+    border:1px solid rgba(255,255,255,.2); background:transparent;
+    color:rgba(255,255,255,.75); cursor:pointer; transition:.18s; white-space:nowrap;
+  }
+  .ghost:hover{ background:rgba(255,255,255,.1); color:#fff; }
+  .ghost.primary{
+    border-color:transparent; color:#2a1400; font-weight:800;
+    background:linear-gradient(135deg,var(--a1),var(--a2));
+    box-shadow:0 10px 24px rgba(0,0,0,.35);
+  }
+  .ghost.primary:hover{ filter:brightness(1.07); }
+
+  /* ── 抽取舞台 ── */
+  .stage{
+    position:relative; min-height:320px; padding:38px 26px 30px;
+    border-radius:26px; border:1px solid rgba(255,255,255,.13);
+    display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px;
+    background:
+      radial-gradient(620px 250px at 50% 0%, rgba(255,255,255,.10), transparent 72%),
+      rgba(255,255,255,.05);
+    box-shadow:0 30px 70px rgba(0,0,0,.45), inset 0 1px 0 rgba(255,255,255,.08);
+    overflow:hidden;
+  }
+  .names{
+    display:flex; flex-wrap:wrap; justify-content:center; align-items:center;
+    gap:10px 34px; min-height:118px; width:100%;
+  }
+  .name{
+    font-weight:900; letter-spacing:.06em; color:#fff; white-space:nowrap;
+    text-shadow:0 2px 26px rgba(255,180,90,.5), 0 0 90px rgba(255,138,76,.25);
+  }
+  .name.idle{
+    font-size:clamp(26px,5vw,50px); font-weight:700; letter-spacing:.22em;
+    color:rgba(255,255,255,.42); text-shadow:none;
+  }
+  .name.rolling{ font-size:clamp(34px,7vw,74px); opacity:.72; }
+  .name.result{ font-size:clamp(40px,8vw,92px); animation:pop .5s cubic-bezier(.2,1.5,.45,1) both; }
+  .names.multi .name.rolling{ font-size:clamp(22px,3.6vw,42px); }
+  .names.multi .name.result{ font-size:clamp(24px,4.2vw,50px); }
+  @keyframes pop{
+    0%{ transform:scale(.55); opacity:0; filter:blur(6px); }
+    62%{ transform:scale(1.09); opacity:1; filter:blur(0); }
+    100%{ transform:scale(1); opacity:1; }
+  }
+
+  .draw-btn{
+    margin-top:26px; padding:16px 60px; border:none; border-radius:999px;
+    font-family:inherit; font-size:20px; font-weight:800; letter-spacing:.14em;
+    color:#2a1400; cursor:pointer;
+    background:linear-gradient(135deg,var(--a1),var(--a2));
+    box-shadow:0 16px 34px rgba(0,0,0,.4), inset 0 1px 0 rgba(255,255,255,.6);
+    transition:transform .15s, box-shadow .2s, filter .2s, opacity .2s;
+  }
+  .draw-btn:hover:not(:disabled){ transform:translateY(-2px); filter:brightness(1.06); }
+  .draw-btn:active:not(:disabled){ transform:translateY(1px) scale(.99); }
+  .draw-btn:disabled{ cursor:default; opacity:.7; filter:grayscale(.25) brightness(.92); }
+  .hint{ margin:18px 0 0; font-size:13px; letter-spacing:.1em; color:rgba(255,255,255,.32); }
+
+  /* ── 判定区 ── */
+  .judge{
+    margin-top:20px; padding:20px 22px 16px; border-radius:20px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+    animation:fadeUp .3s ease both;
+  }
+  @keyframes fadeUp{ from{ opacity:0; transform:translateY(12px); } to{ opacity:1; transform:none; } }
+  .judge-head{ display:flex; justify-content:space-between; align-items:baseline;
+    gap:12px; flex-wrap:wrap; margin-bottom:6px; }
+  .judge-head h2{ margin:0; font-size:15px; font-weight:800; letter-spacing:.14em; color:rgba(255,255,255,.85); }
+  .judge-head span{ font-size:13px; color:rgba(255,255,255,.45); }
+
+  .judge-row{
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+    padding:12px 0; border-bottom:1px dashed rgba(255,255,255,.08);
+  }
+  .judge-row:last-child{ border-bottom:none; }
+  .judge-name{ flex:1 1 100px; font-size:16px; font-weight:800; letter-spacing:.04em; }
+  .judge-btn{
+    padding:7px 16px; border-radius:99px; font-family:inherit; font-size:13px;
+    border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.05);
+    color:rgba(255,255,255,.68); cursor:pointer; transition:.18s;
+  }
+  .judge-btn:hover{ background:rgba(255,255,255,.12); color:#fff; }
+  .judge-btn.right.active{
+    background:rgba(94,230,160,.2); border-color:rgba(94,230,160,.65);
+    color:#5ee6a0; font-weight:800; box-shadow:0 0 18px rgba(94,230,160,.22);
+  }
+  .judge-btn.wrong.active{
+    background:rgba(255,139,139,.18); border-color:rgba(255,139,139,.65);
+    color:#ff8b8b; font-weight:800; box-shadow:0 0 18px rgba(255,139,139,.2);
+  }
+
+  /* ── 控制面板 ── */
+  .panel{
+    margin-top:22px; padding:22px; border-radius:20px;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.12);
+    display:grid; gap:20px;
+  }
+  .lab{ display:block; margin-bottom:10px; font-size:13px; letter-spacing:.1em; color:rgba(255,255,255,.55); }
+
+  .seg{ display:flex; gap:8px; flex-wrap:wrap; }
+  .seg button{
+    padding:9px 18px; border-radius:12px; font-family:inherit; font-size:15px;
+    border:1px solid rgba(255,255,255,.16); background:rgba(255,255,255,.05);
+    color:#dbe3ff; cursor:pointer; transition:.18s;
+  }
+  .seg button:hover{ background:rgba(255,255,255,.12); }
+  .seg button.on{
+    background:linear-gradient(135deg,var(--a1),var(--a2)); color:#2a1400; font-weight:800;
+    border-color:transparent; box-shadow:0 6px 18px rgba(0,0,0,.3);
+  }
+
+  .row-between{ display:flex; justify-content:space-between; align-items:center; gap:14px; flex-wrap:wrap; }
+  .switch{ display:inline-flex; align-items:center; gap:10px; cursor:pointer; user-select:none;
+    font-size:15px; color:rgba(255,255,255,.82); }
+  .switch input{ position:absolute; opacity:0; width:0; height:0; }
+  .slider{ width:46px; height:26px; border-radius:99px; background:rgba(255,255,255,.18);
+    position:relative; transition:.25s; flex:0 0 auto; }
+  .slider::after{ content:""; position:absolute; top:3px; left:3px; width:20px; height:20px;
+    border-radius:50%; background:#fff; transition:.25s; }
+  .switch input:checked + .slider{ background:linear-gradient(135deg,var(--a1),var(--a2)); }
+  .switch input:checked + .slider::after{ transform:translateX(20px); }
+
+  /* ── 记录 ── */
+  .history-wrap{
+    margin-top:22px; padding:18px 22px 12px; border-radius:20px;
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1);
+  }
+  .hist-head{ display:flex; justify-content:space-between; align-items:baseline; gap:12px;
+    flex-wrap:wrap; margin-bottom:12px; }
+  .hist-head h2{ margin:0; font-size:15px; font-weight:800; letter-spacing:.14em; color:rgba(255,255,255,.85); }
+  .hist-head span{ font-size:13px; color:rgba(255,255,255,.5); font-variant-numeric:tabular-nums; }
+  .h-row{ display:flex; align-items:center; gap:12px; padding:9px 0; border-bottom:1px dashed rgba(255,255,255,.08); }
+  .h-row:last-child{ border-bottom:none; }
+  .h-no{
+    width:28px; height:28px; flex:0 0 auto; border-radius:50%;
+    display:grid; place-items:center; font-size:12px;
+    background:rgba(255,255,255,.08); color:rgba(255,255,255,.6);
+  }
+  .h-items{ display:flex; flex-wrap:wrap; gap:8px; flex:1; }
+  .h-name{
+    padding:4px 12px; border-radius:99px; font-size:14px;
+    background:rgba(255,255,255,.09); border:1px solid rgba(255,255,255,.16);
+  }
+  .h-name.ok{ background:rgba(94,230,160,.16); border-color:rgba(94,230,160,.42); color:#8df0b8; }
+  .h-name.no{ background:rgba(255,139,139,.14); border-color:rgba(255,139,139,.42); color:#ffb0b0; }
+  .h-time{ font-size:12px; color:rgba(255,255,255,.32); font-variant-numeric:tabular-nums; }
+  .empty{ padding:10px 0; font-size:14px; color:rgba(255,255,255,.35); line-height:1.8; }
+
+  /* ── 统计弹层 ── */
+  .modal{
+    position:fixed; inset:0; z-index:200; padding:24px 16px;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(5,8,18,.74); backdrop-filter:blur(7px);
+    animation:fadeIn .22s ease both;
+  }
+  @keyframes fadeIn{ from{ opacity:0; } to{ opacity:1; } }
+  .modal-card{
+    width:min(780px,100%); max-height:88vh; overflow:auto;
+    background:#131a2c; border:1px solid rgba(255,255,255,.14);
+    border-radius:26px; padding:28px 26px 22px;
+    box-shadow:0 44px 100px rgba(0,0,0,.65);
+    animation:popIn .28s cubic-bezier(.2,1.4,.5,1) both;
+  }
+  @keyframes popIn{ from{ opacity:0; transform:translateY(18px) scale(.97); } to{ opacity:1; transform:none; } }
+  .modal-head{ display:flex; justify-content:space-between; align-items:flex-start;
+    gap:14px; flex-wrap:wrap; margin-bottom:20px; }
+  .modal-head h2{ margin:0; font-size:21px; font-weight:900; letter-spacing:.14em; }
+  .modal-head p{ margin:8px 0 0; font-size:13px; color:rgba(255,255,255,.45); letter-spacing:.06em; }
+
+  .sum-grid{
+    display:grid; grid-template-columns:repeat(auto-fit,minmax(112px,1fr));
+    gap:12px; margin-bottom:22px;
+  }
+  .sum-item{
+    padding:16px 14px; border-radius:16px; text-align:center;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+  }
+  .sum-item b{ display:block; font-size:12px; font-weight:600; letter-spacing:.12em;
+    color:rgba(255,255,255,.45); margin-bottom:8px; }
+  .sum-item span{ font-size:24px; font-weight:900; font-variant-numeric:tabular-nums; }
+  .sum-item span.ok{ color:#5ee6a0; }
+  .sum-item span.bad{ color:#ff8b8b; }
+
+  .stat-list{ display:grid; gap:2px; }
+  .stat-row{
+    display:flex; align-items:center; gap:12px; padding:12px 4px;
+    border-bottom:1px dashed rgba(255,255,255,.08);
+  }
+  .stat-row:last-child{ border-bottom:none; }
+  .stat-idx{ width:26px; flex:0 0 auto; font-size:12px; color:rgba(255,255,255,.35);
+    font-variant-numeric:tabular-nums; text-align:right; }
+  .stat-name{ width:90px; flex:0 0 auto; font-size:16px; font-weight:800; letter-spacing:.03em; }
+  .stat-pill{
+    flex:0 0 auto; padding:3px 11px; border-radius:99px; font-size:13px;
+    font-variant-numeric:tabular-nums; font-weight:700;
+  }
+  .stat-pill.ok{ background:rgba(94,230,160,.16); color:#5ee6a0; }
+  .stat-pill.bad{ background:rgba(255,139,139,.14); color:#ff8b8b; }
+  .stat-bar{ flex:1 1 100px; height:8px; border-radius:99px; overflow:hidden;
+    background:rgba(255,255,255,.1); min-width:60px; }
+  .stat-bar i{ display:block; height:100%; border-radius:99px;
+    background:linear-gradient(90deg,#5ee6a0,#2fd18a); transition:width .4s; }
+  .stat-pct{ flex:0 0 50px; text-align:right; font-size:13px;
+    color:rgba(255,255,255,.55); font-variant-numeric:tabular-nums; }
+
+  /* 总览科目行 */
+  .ov-row{
+    display:flex; align-items:center; gap:12px; padding:13px 15px;
+    border-radius:14px; margin-bottom:8px;
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08);
+    transition:.18s;
+  }
+  .ov-row[data-sub]{ cursor:pointer; }
+  .ov-row[data-sub]:hover{ background:rgba(255,255,255,.1); transform:translateX(3px); }
+  .ov-dot{ width:11px; height:11px; border-radius:50%; flex:0 0 auto; }
+  .ov-name{ width:58px; flex:0 0 auto; font-size:16px; font-weight:900; letter-spacing:.06em; }
+  .ov-none{ flex:1; font-size:13px; color:rgba(255,255,255,.3); }
+  .ov-arrow{ font-size:20px; color:rgba(255,255,255,.28); line-height:1; }
+  .back-ov{ margin-bottom:16px; }
+
+  .modal-foot{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:24px; }
+
+  /* ── 提示条 ── */
+  .toast{
+    position:fixed; left:50%; bottom:34px; z-index:300;
+    padding:12px 22px; border-radius:14px; font-size:14px; color:#fff;
+    background:rgba(20,26,46,.96); border:1px solid rgba(255,255,255,.18);
+    box-shadow:0 14px 34px rgba(0,0,0,.5);
+    opacity:0; pointer-events:none; transform:translate(-50%,18px); transition:.25s;
+  }
+  .toast.show{ opacity:1; transform:translate(-50%,0); }
+
+  ::-webkit-scrollbar{ width:10px; }
+  ::-webkit-scrollbar-thumb{ background:rgba(255,255,255,.14); border-radius:99px; }
+</style>
+</head>
+<body>
+
+<!-- ═══ 1. 科目选择（主页） ═══ -->
+<section id="screenSubject">
+  <div class="wrap">
+    <header class="head">
+      <h1>八（8）班 · 随机点名</h1>
+      <p class="sub">请选择科目开始 · 共 <b id="totalNum">0</b> 人</p>
+    </header>
+
+    <div class="home-actions">
+      <button class="home-btn primary" id="homeEndBtn">下 课</button>
+      <button class="home-btn" id="homeResetBtn">重置全部</button>
+    </div>
+
+    <div class="subjects" id="subjectGrid"></div>
+  </div>
+</section>
+
+<!-- ═══ 2. 抽取界面 ═══ -->
+<section id="screenDraw" hidden>
+  <div class="wrap">
+    <div class="topbar">
+      <button class="ghost" id="backBtn">← 切换科目</button>
+      <span class="cur-subject" id="curSubject"></span>
+      <button class="ghost primary" id="endBtn">下课</button>
+    </div>
+
+    <section class="stage">
+      <div class="names" id="names"><span class="name idle">准备就绪</span></div>
+      <button id="drawBtn" class="draw-btn">开始抽取</button>
+      <p class="hint">按 空格键 也能抽取</p>
+    </section>
+
+    <section class="judge" id="judgeArea" hidden>
+      <div class="judge-head">
+        <h2>请判定回答结果</h2>
+        <span>点选后自动记录，可再次点击取消</span>
+      </div>
+      <div id="judgeList"></div>
+    </section>
+
+    <section class="panel">
+      <div>
+        <span class="lab">抽取人数</span>
+        <div class="seg" id="countSeg">
+          <button data-n="1" class="on">1 人</button>
+          <button data-n="2">2 人</button>
+          <button data-n="3">3 人</button>
+          <button data-n="4">4 人</button>
+          <button data-n="5">5 人</button>
+          <button data-n="6">6 人</button>
+        </div>
+      </div>
+      <div class="row-between">
+        <label class="switch">
+          <input type="checkbox" id="noRepeat" checked>
+          <span class="slider"></span>
+          <span>不重复抽取</span>
+        </label>
+        <button id="resetBtn" class="ghost">重置本科记录</button>
+      </div>
+    </section>
+
+    <section class="history-wrap">
+      <div class="hist-head">
+        <h2>抽取记录</h2>
+        <span id="status"></span>
+      </div>
+      <div id="history"></div>
+    </section>
+  </div>
+</section>
+
+<!-- ═══ 3. 单科下课统计 ═══ -->
+<div class="modal" id="statsModal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <h2 id="statsTitle">课堂统计</h2>
+        <p id="statsSub"></p>
+      </div>
+      <button class="ghost" id="closeStats">关闭</button>
+    </div>
+
+    <div class="sum-grid" id="sumGrid"></div>
+    <div class="stat-list" id="statList"></div>
+
+    <div class="modal-foot">
+      <button class="ghost" id="clearStats">清空本科答题记录</button>
+      <button class="ghost primary" id="confirmEnd">好的，下课</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ 4. 主页 · 全部科目总览 ═══ -->
+<div class="modal" id="overviewModal" hidden>
+  <div class="modal-card">
+    <div class="modal-head">
+      <div>
+        <h2 id="overviewTitle">下课统计 · 全部科目</h2>
+        <p id="overviewSub"></p>
+      </div>
+      <button class="ghost" id="closeOverview">关闭</button>
+    </div>
+
+    <div class="sum-grid" id="overviewSum"></div>
+    <div id="overviewBody"></div>
+
+    <div class="modal-foot">
+      <button class="ghost" id="clearAllStats">清空全部答题记录</button>
+      <button class="ghost primary" id="confirmOverviewEnd">好的，下课</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ 学生名单：全部为“鲁文通”，共 61 人 ============ */
+const STUDENTS = Array.from({ length: 61 }, (_, i) => ({ id: i, name: '鲁文通' }));
+
+/* ============ 科目 ============ */
+const SUBJECTS = [
+  { name:'语文', c1:'#ff9a8b', c2:'#ff6a88' },
+  { name:'数学', c1:'#ffd479', c2:'#ff8a4c' },
+  { name:'英语', c1:'#7ee8fa', c2:'#4a8cff' },
+  { name:'生物', c1:'#8ef6a3', c2:'#22b573' },
+  { name:'地理', c1:'#a7c7ff', c2:'#5b7cfa' },
+  { name:'物理', c1:'#c2a3ff', c2:'#7c4dff' },
+  { name:'政治', c1:'#ffc98b', c2:'#f2704a' },
+  { name:'历史', c1:'#ffe08a', c2:'#c99a2e' }
+];
+
+/* 每科独立：已抽 id 集合 / 抽取记录 / 答题统计（按姓名聚合） */
+const subjectState = {};
+SUBJECTS.forEach(s => subjectState[s.name] = { drawn:new Set(), history:[], stats:{} });
+
+const state = { current:null, noRepeat:true, count:1, rolling:false };
+
+/* ============ DOM ============ */
+const screenSubject = document.getElementById('screenSubject');
+const screenDraw    = document.getElementById('screenDraw');
+const subjectGrid   = document.getElementById('subjectGrid');
+const curSubjectEl  = document.getElementById('curSubject');
+const backBtn       = document.getElementById('backBtn');
+const endBtn        = document.getElementById('endBtn');
+const namesEl       = document.getElementById('names');
+const drawBtn       = document.getElementById('drawBtn');
+const judgeArea     = document.getElementById('judgeArea');
+const judgeList     = document.getElementById('judgeList');
+const statusEl      = document.getElementById('status');
+const histEl        = document.getElementById('history');
+const countSeg      = document.getElementById('countSeg');
+const noRepeatEl    = document.getElementById('noRepeat');
+const resetBtn      = document.getElementById('resetBtn');
+const toastEl       = document.getElementById('toast');
+document.getElementById('totalNum').textContent = STUDENTS.length;
+
+/* 单科统计弹层 */
+const statsModal    = document.getElementById('statsModal');
+const statsTitle    = document.getElementById('statsTitle');
+const statsSub      = document.getElementById('statsSub');
+const sumGrid       = document.getElementById('sumGrid');
+const statList      = document.getElementById('statList');
+const closeStats    = document.getElementById('closeStats');
+const clearStats    = document.getElementById('clearStats');
+const confirmEnd    = document.getElementById('confirmEnd');
+
+/* 主页按钮 + 总览弹层 */
+const homeEndBtn         = document.getElementById('homeEndBtn');
+const homeResetBtn       = document.getElementById('homeResetBtn');
+const overviewModal      = document.getElementById('overviewModal');
+const overviewTitle      = document.getElementById('overviewTitle');
+const overviewSub        = document.getElementById('overviewSub');
+const overviewSum        = document.getElementById('overviewSum');
+const overviewBody       = document.getElementById('overviewBody');
+const closeOverview      = document.getElementById('closeOverview');
+const clearAllStatsBtn   = document.getElementById('clearAllStats');
+const confirmOverviewEnd = document.getElementById('confirmOverviewEnd');
+
+/* ============ 工具 ============ */
+function shuffle(arr){
+  const a = arr.slice();
+  for(let i = a.length - 1; i > 0; i--){
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+let toastTimer;
+function showToast(msg){
+  toastEl.textContent = msg;
+  toastEl.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove('show'), 2000);
+}
+function fmtTime(d){
+  const p = n => String(n).padStart(2,'0');
+  return `${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`;
+}
+function pct(r, t){ return t ? Math.round(r / t * 100) : 0; }
+
+/* ============ 统计计算 ============ */
+function computeSubjectStats(name){
+  const st = subjectState[name];
+  const rows = Object.entries(st.stats)
+    .map(([n, v]) => ({ name:n, right:v.right, wrong:v.wrong, total:v.right + v.wrong }))
+    .filter(r => r.total > 0)
+    .sort((a, b) => b.total - a.total || b.right - a.right || a.name.localeCompare(b.name, 'zh'));
+  const right = rows.reduce((a, r) => a + r.right, 0);
+  const wrong = rows.reduce((a, r) => a + r.wrong, 0);
+  return { rows, right, wrong, total:right + wrong };
+}
+
+function computeGlobalStats(){
+  let right = 0, wrong = 0, subjects = 0;
+  SUBJECTS.forEach(s => {
+    const c = computeSubjectStats(s.name);
+    right += c.right; wrong += c.wrong;
+    if(c.total > 0) subjects++;
+  });
+  return { right, wrong, total:right + wrong, subjects };
+}
+
+function statRowsHTML(rows, emptyText){
+  if(!rows.length) return `<div class="empty">${emptyText || '暂无数据'}</div>`;
+  return rows.map((r, i) => `
+    <div class="stat-row">
+      <span class="stat-idx">${i + 1}</span>
+      <span class="stat-name">${r.name}</span>
+      <span class="stat-pill ok">对 ${r.right}</span>
+      <span class="stat-pill bad">错 ${r.wrong}</span>
+      <span class="stat-bar"><i style="width:${pct(r.right, r.total)}%"></i></span>
+      <span class="stat-pct">${pct(r.right, r.total)}%</span>
+    </div>`).join('');
+}
+
+/* ============ 主页 ============ */
+function renderSubjectGrid(){
+  subjectGrid.innerHTML = SUBJECTS.map(s => {
+    const st = subjectState[s.name];
+    const c  = computeSubjectStats(s.name);
+    return `<button class="subject-card" data-sub="${s.name}" style="--c1:${s.c1};--c2:${s.c2}">
+              <div class="s-name">${s.name}</div>
+              <div class="s-meta">
+                共 ${STUDENTS.length} 人 · 已抽 ${st.drawn.size} 人<br>
+                已判定 ${c.total} 次
+              </div>
+            </button>`;
+  }).join('');
+}
+
+subjectGrid.addEventListener('click', e => {
+  const btn = e.target.closest('.subject-card');
+  if(!btn) return;
+  enterSubject(btn.dataset.sub);
+});
+
+/* ============ 进入 / 离开科目 ============ */
+function enterSubject(name){
+  const sub = SUBJECTS.find(s => s.name === name);
+  state.current = name;
+  state.rolling = false;
+
+  document.documentElement.style.setProperty('--a1', sub.c1);
+  document.documentElement.style.setProperty('--a2', sub.c2);
+
+  curSubjectEl.textContent = name;
+  drawBtn.disabled = false;
+  drawBtn.textContent = '开始抽取';
+  namesEl.classList.remove('multi');
+  namesEl.innerHTML = '<span class="name idle">准备就绪</span>';
+
+  judgeArea.hidden = true;
+  judgeList.innerHTML = '';
+  judgeSelection = {};
+
+  screenSubject.hidden = true;
+  screenDraw.hidden = false;
+
+  renderHistory();
+  updateStatus();
+}
+
+backBtn.addEventListener('click', () => {
+  if(state.rolling) return;
+  state.current = null;
+  screenDraw.hidden = true;
+  screenSubject.hidden = false;
+  renderSubjectGrid();
+});
+
+/* ============ 抽取池 ============ */
+function getPool(){
+  const st = subjectState[state.current];
+  return STUDENTS.filter(s => !(state.noRepeat && st.drawn.has(s.id)));
+}
+
+/* ============ 渲染 ============ */
+function renderNames(list, mode){
+  namesEl.classList.toggle('multi', list.length > 1);
+  namesEl.innerHTML = list.map((s, i) =>
+    `<span class="name ${mode}" style="animation-delay:${mode === 'result' ? i * 70 : 0}ms">${s.name}</span>`
+  ).join('');
+}
+
+function renderHistory(){
+  const st = subjectState[state.current];
+  if(!st || st.history.length === 0){
+    histEl.innerHTML = '<div class="empty">还没有抽取记录</div>';
+    return;
+  }
+  histEl.innerHTML = st.history.map((h, idx) => {
+    const no = st.history.length - idx;
+    const items = h.items.map(it => {
+      const cls  = it.judge === 'right' ? ' ok' : it.judge === 'wrong' ? ' no' : '';
+      const mark = it.judge === 'right' ? ' ✓' : it.judge === 'wrong' ? ' ✗' : '';
+      return `<span class="h-name${cls}">${it.name}${mark}</span>`;
+    }).join('');
+    return `<div class="h-row">
+              <span class="h-no">${no}</span>
+              <div class="h-items">${items}</div>
+              <span class="h-time">${fmtTime(h.time)}</span>
+            </div>`;
+  }).join('');
+}
+
+function updateStatus(){
+  if(!state.current) return;
+  const st = subjectState[state.current];
+  const c  = computeSubjectStats(state.current);
+  statusEl.textContent = `共 ${STUDENTS.length} 人 · 已抽 ${st.drawn.size} 人 · 剩余 ${getPool().length} 人 · 已判定 ${c.total} 次`;
+}
+
+/* ============ 判定区 ============ */
+let judgeSelection = {};
+
+function renderJudge(picked){
+  judgeSelection = {};
+  picked.forEach(s => judgeSelection[s.id] = null);
+  judgeArea.hidden = false;
+  judgeList.innerHTML = picked.map(s => `
+    <div class="judge-row" data-id="${s.id}" data-name="${s.name}">
+      <span class="judge-name">${s.name}</span>
+      <button class="judge-btn right" data-act="right">✓ 正确</button>
+      <button class="judge-btn wrong" data-act="wrong">✗ 错误</button>
+    </div>`).join('');
+  syncJudgeUI();
+}
+
+function syncJudgeUI(){
+  [...judgeList.querySelectorAll('.judge-row')].forEach(row => {
+    const id = Number(row.dataset.id);
+    const sel = judgeSelection[id];
+    row.querySelector('.judge-btn.right').classList.toggle('active', sel === 'right');
+    row.querySelector('.judge-btn.wrong').classList.toggle('active', sel === 'wrong');
+  });
+}
+
+judgeList.addEventListener('click', e => {
+  const btn = e.target.closest('.judge-btn');
+  if(!btn || !state.current) return;
+  const row  = btn.closest('.judge-row');
+  const id   = Number(row.dataset.id);
+  const name = row.dataset.name;
+  const act  = btn.dataset.act;
+  const st   = subjectState[state.current];
+
+  if(!st.stats[name]) st.stats[name] = { right:0, wrong:0 };
+  const cur = judgeSelection[id];
+
+  if(cur === act){
+    st.stats[name][act] = Math.max(0, st.stats[name][act] - 1);
+    judgeSelection[id] = null;
+  }else{
+    if(cur) st.stats[name][cur] = Math.max(0, st.stats[name][cur] - 1);
+    st.stats[name][act]++;
+    judgeSelection[id] = act;
+  }
+
+  /* 同步本次记录中该 id 的判定标记 */
+  const latest = st.history[0];
+  if(latest){
+    const item = latest.items.find(i => i.id === id);
+    if(item) item.judge = judgeSelection[id];
+  }
+
+  syncJudgeUI();
+  renderHistory();
+  updateStatus();
+});
+
+/* ============ 抽取主流程 ============ */
+function doDraw(){
+  if(!state.current || state.rolling) return;
+
+  const pool = getPool();
+  if(pool.length === 0){
+    namesEl.classList.remove('multi');
+    namesEl.innerHTML = '<span class="name idle">没有可抽的学生啦</span>';
+    judgeArea.hidden = true;
+    showToast('请点击“重置本科记录”，或关闭不重复抽取');
+    return;
+  }
+
+  const n = Math.min(state.count, pool.length);
+  state.rolling = true;
+  drawBtn.disabled = true;
+  drawBtn.textContent = '抽取中…';
+  judgeArea.hidden = true;
+
+  const t0 = performance.now();
+  const DURATION = 1100;
+  let lastSwap = 0;
+
+  function frame(now){
+    const p = Math.min(1, (now - t0) / DURATION);
+    if(p < 1){
+      if(now - lastSwap > 50){
+        lastSwap = now;
+        renderNames(shuffle(pool).slice(0, n), 'rolling');
+      }
+      requestAnimationFrame(frame);
+    }else{
+      const picked = shuffle(pool).slice(0, n);
+      renderNames(picked, 'result');
+      finish(picked);
+    }
+  }
+  requestAnimationFrame(frame);
+}
+
+function finish(picked){
+  state.rolling = false;
+  drawBtn.disabled = false;
+  drawBtn.textContent = '再抽一次';
+
+  const st = subjectState[state.current];
+  if(state.noRepeat) picked.forEach(s => st.drawn.add(s.id));
+
+  st.history.unshift({
+    items: picked.map(s => ({ id:s.id, name:s.name, judge:null })),
+    time : new Date()
+  });
+  if(st.history.length > 80) st.history.pop();
+
+  renderJudge(picked);
+  renderHistory();
+  updateStatus();
+}
+
+/* ============ 抽取页事件 ============ */
+drawBtn.addEventListener('click', doDraw);
+
+countSeg.addEventListener('click', e => {
+  const b = e.target.closest('button');
+  if(!b) return;
+  state.count = Number(b.dataset.n);
+  [...countSeg.children].forEach(c => c.classList.toggle('on', c === b));
+});
+
+noRepeatEl.addEventListener('change', () => {
+  state.noRepeat = noRepeatEl.checked;
+  updateStatus();
+});
+
+resetBtn.addEventListener('click', () => {
+  if(!state.current || state.rolling) return;
+  const st = subjectState[state.current];
+  st.drawn.clear();
+  st.history = [];
+  renderHistory();
+  updateStatus();
+  namesEl.classList.remove('multi');
+  namesEl.innerHTML = '<span class="name idle">准备就绪</span>';
+  judgeArea.hidden = true;
+  judgeList.innerHTML = '';
+  judgeSelection = {};
+  drawBtn.disabled = false;
+  drawBtn.textContent = '开始抽取';
+  showToast(`已重置「${state.current}」的抽取记录（答题统计保留）`);
+});
+
+/* ============ 单科下课统计 ============ */
+function openStats(){
+  if(!state.current || state.rolling) return;
+  const name = state.current;
+  const c = computeSubjectStats(name);
+
+  statsTitle.textContent = `${name} · 下课统计`;
+  statsSub.textContent = c.rows.length
+    ? `本节课共 ${c.rows.length} 名同学作答，累计判定 ${c.total} 次`
+    : '本节课还没有判定记录';
+
+  sumGrid.innerHTML = `
+    <div class="sum-item"><b>作答人数</b><span>${c.rows.length}</span></div>
+    <div class="sum-item"><b>判定总次数</b><span>${c.total}</span></div>
+    <div class="sum-item"><b>回答正确</b><span class="ok">${c.right}</span></div>
+    <div class="sum-item"><b>回答错误</b><span class="bad">${c.wrong}</span></div>
+    <div class="sum-item"><b>总体正确率</b><span>${pct(c.right, c.total)}%</span></div>
+  `;
+  statList.innerHTML = statRowsHTML(c.rows, '暂无数据。抽取学生后，在结果下方点击“正确 / 错误”即可记录。');
+
+  statsModal.hidden = false;
+}
+
+function closeStatsModal(){ statsModal.hidden = true; }
+
+endBtn.addEventListener('click', openStats);
+closeStats.addEventListener('click', closeStatsModal);
+confirmEnd.addEventListener('click', () => { closeStatsModal(); showToast('已下课，记录已保存'); });
+statsModal.addEventListener('click', e => { if(e.target === statsModal) closeStatsModal(); });
+
+clearStats.addEventListener('click', () => {
+  if(!state.current) return;
+  const st = subjectState[state.current];
+  st.stats = {};
+  st.history.forEach(h => h.items.forEach(i => i.judge = null));
+  judgeSelection = {};
+  syncJudgeUI();
+  renderHistory();
+  updateStatus();
+  openStats();
+  showToast(`已清空「${state.current}」的答题统计`);
+});
+
+/* ============ 主页 · 下课总览 ============ */
+function openOverview(){
+  if(state.rolling) return;
+  overviewModal.hidden = false;
+  renderOverviewSummary();
+}
+function closeOverviewModal(){ overviewModal.hidden = true; }
+
+function renderOverviewSummary(){
+  const g = computeGlobalStats();
+
+  overviewTitle.textContent = '下课统计 · 全部科目';
+  overviewSub.textContent = g.total
+    ? `${g.subjects} 个科目有判定记录，累计判定 ${g.total} 次`
+    : '还没有任何判定记录';
+
+  overviewSum.innerHTML = `
+    <div class="sum-item"><b>有记录科目</b><span>${g.subjects} / ${SUBJECTS.length}</span></div>
+    <div class="sum-item"><b>判定总次数</b><span>${g.total}</span></div>
+    <div class="sum-item"><b>回答正确</b><span class="ok">${g.right}</span></div>
+    <div class="sum-item"><b>回答错误</b><span class="bad">${g.wrong}</span></div>
+    <div class="sum-item"><b>总体正确率</b><span>${pct(g.right, g.total)}%</span></div>
+  `;
+
+  overviewBody.innerHTML = SUBJECTS.map(s => {
+    const c = computeSubjectStats(s.name);
+    if(c.total === 0){
+      return `<div class="ov-row">
+                <span class="ov-dot" style="background:linear-gradient(135deg,${s.c1},${s.c2});opacity:.3"></span>
+                <span class="ov-name" style="color:rgba(255,255,255,.4)">${s.name}</span>
+                <span class="ov-none">暂无判定记录</span>
+              </div>`;
+    }
+    return `<div class="ov-row" data-sub="${s.name}">
+              <span class="ov-dot" style="background:linear-gradient(135deg,${s.c1},${s.c2})"></span>
+              <span class="ov-name">${s.name}</span>
+              <span class="stat-pill ok">对 ${c.right}</span>
+              <span class="stat-pill bad">错 ${c.wrong}</span>
+              <span class="stat-bar"><i style="width:${pct(c.right, c.total)}%"></i></span>
+              <span class="stat-pct">${pct(c.right, c.total)}%</span>
+              <span class="ov-arrow">›</span>
+            </div>`;
+  }).join('');
+}
+
+function renderOverviewSubject(name){
+  const sub = SUBJECTS.find(s => s.name === name);
+  const c = computeSubjectStats(name);
+
+  overviewTitle.textContent = `${name} · 课堂统计`;
+  overviewSub.textContent = c.rows.length
+    ? `${c.rows.length} 名同学作答，累计判定 ${c.total} 次`
+    : '本节课还没有判定记录';
+
+  overviewSum.innerHTML = `
+    <div class="sum-item"><b>作答人数</b><span>${c.rows.length}</span></div>
+    <div class="sum-item"><b>判定总次数</b><span>${c.total}</span></div>
+    <div class="sum-item"><b>回答正确</b><span class="ok">${c.right}</span></div>
+    <div class="sum-item"><b>回答错误</b><span class="bad">${c.wrong}</span></div>
+    <div class="sum-item"><b>正确率</b><span>${pct(c.right, c.total)}%</span></div>
+  `;
+
+  overviewBody.innerHTML =
+    `<button class="ghost back-ov" id="backToSummary">← 返回全部科目</button>`
+    + statRowsHTML(c.rows, '暂无数据。抽取学生后，在结果下方点击“正确 / 错误”即可记录。');
+}
+
+overviewBody.addEventListener('click', e => {
+  if(e.target.closest('#backToSummary')){ renderOverviewSummary(); return; }
+  const row = e.target.closest('.ov-row[data-sub]');
+  if(row) renderOverviewSubject(row.dataset.sub);
+});
+
+homeEndBtn.addEventListener('click', openOverview);
+closeOverview.addEventListener('click', closeOverviewModal);
+confirmOverviewEnd.addEventListener('click', () => { closeOverviewModal(); showToast('已下课，记录已保存'); });
+overviewModal.addEventListener('click', e => { if(e.target === overviewModal) closeOverviewModal(); });
+
+/* 清空全部答题记录 */
+clearAllStatsBtn.addEventListener('click', () => {
+  if(!confirm('确定要清空全部科目的答题记录吗？抽取记录会保留。')) return;
+  SUBJECTS.forEach(s => {
+    const st = subjectState[s.name];
+    st.stats = {};
+    st.history.forEach(h => h.items.forEach(i => i.judge = null));
+  });
+  renderOverviewSummary();
+  showToast('已清空全部科目的答题记录');
+});
+
+/* 主页重置全部 */
+homeResetBtn.addEventListener('click', () => {
+  if(state.rolling) return;
+  if(!confirm('确定要重置全部科目吗？\n将清空所有抽取记录和答题统计。')) return;
+  SUBJECTS.forEach(s => {
+    const st = subjectState[s.name];
+    st.drawn.clear();
+    st.history = [];
+    st.stats = {};
+  });
+  renderSubjectGrid();
+  showToast('已重置全部科目的记录');
+});
+
+/* ============ 键盘 ============ */
+window.addEventListener('keydown', e => {
+  if(e.key === 'Escape'){
+    if(!statsModal.hidden) closeStatsModal();
+    if(!overviewModal.hidden) closeOverviewModal();
+    return;
+  }
+  if(e.code === 'Space' || e.key === 'Enter'){
+    if(e.target.tagName === 'INPUT') return;
+    if(!state.current) return;
+    if(!statsModal.hidden || !overviewModal.hidden) return;
+    e.preventDefault();
+    doDraw();
+  }
+});
+
+/* ============ 初始化 ============ */
+renderSubjectGrid();
+</script>
+</body>
+</html>
