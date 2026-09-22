@@ -167,7 +167,7 @@
     color:#fff;
   }
 
-  /* ★ 正确 / 错误 按钮：大号 + 彩色背景 */
+  /* 正确 / 错误 按钮：大号 + 彩色背景 */
   .judge-btn{
     min-width:118px;
     padding:15px 28px;
@@ -353,6 +353,54 @@
   .modal-foot{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; margin-top:24px; }
   .modal-foot.end{ justify-content:flex-end; }
 
+  /* ── 欢迎浮层 ── */
+  .welcome{
+    position:fixed; inset:0; z-index:500;
+    display:flex; align-items:center; justify-content:center;
+    background:rgba(5,8,18,.84);
+    backdrop-filter:blur(10px);
+    animation:welcomeIn .4s ease both;
+  }
+  .welcome.out{ animation:welcomeOut .55s ease both; }
+  @keyframes welcomeIn{ from{ opacity:0; } to{ opacity:1; } }
+  @keyframes welcomeOut{ from{ opacity:1; } to{ opacity:0; } }
+
+  .welcome-inner{
+    text-align:center; padding:0 24px;
+    animation:welcomePop .6s cubic-bezier(.2,1.5,.45,1) both;
+  }
+  @keyframes welcomePop{
+    from{ transform:scale(.82) translateY(14px); opacity:0; }
+    to{ transform:scale(1) translateY(0); opacity:1; }
+  }
+  .welcome-line{
+    width:0; height:2px; margin:0 auto 26px; border-radius:99px;
+    background:linear-gradient(90deg,transparent,var(--a1),transparent);
+    animation:welcomeLine .8s .15s ease forwards;
+  }
+  @keyframes welcomeLine{ to{ width:min(320px,60vw); } }
+  .welcome-sub{
+    font-size:clamp(16px,2.8vw,22px); letter-spacing:.62em;
+    color:rgba(255,255,255,.5); margin-bottom:18px; text-indent:.62em;
+  }
+  .welcome-name{
+    font-size:clamp(46px,9vw,100px); font-weight:900; letter-spacing:.1em;
+    line-height:1.15;
+    background:linear-gradient(180deg,#ffffff 20%,var(--a1));
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    filter:drop-shadow(0 0 46px rgba(255,180,90,.45));
+  }
+  .welcome-tag{
+    margin-top:22px; font-size:clamp(16px,2.6vw,22px); letter-spacing:.7em;
+    color:rgba(255,255,255,.62); text-indent:.7em;
+  }
+  .welcome-subj{
+    margin-top:30px; display:inline-block; padding:8px 22px; border-radius:99px;
+    font-size:14px; letter-spacing:.24em;
+    border:1px solid rgba(255,255,255,.18); background:rgba(255,255,255,.06);
+    color:rgba(255,255,255,.75);
+  }
+
   /* ── 提示条 ── */
   .toast{
     position:fixed; left:50%; bottom:34px; z-index:300;
@@ -495,21 +543,34 @@
   </div>
 </div>
 
+<!-- ═══ 6. 进入学科欢迎浮层 ═══ -->
+<div class="welcome" id="welcome" hidden>
+  <div class="welcome-inner">
+    <div class="welcome-line"></div>
+    <div class="welcome-sub">欢 迎</div>
+    <div class="welcome-name" id="welcomeName">XXX</div>
+    <div class="welcome-tag">老 师</div>
+    <div class="welcome-subj" id="welcomeSubj">语文</div>
+  </div>
+</div>
+
 <div class="toast" id="toast"></div>
 
 <script>
-/* ============ 名单 ============ */
+/* ============ 真实抽取名单 ============ */
 const NAMES = [
   '贺蒙可','鲁文通','边程龙','赵润焓','武奥涵','魏若涵',
   '杨雯茹','陈鑫怡','李小冉','刘馨怡','王晨媗','李辰瑞',
-  '张浩宇','李紫莹','陈紫涵','康艺凡','宋佳壕','鲁文通',
+  '张浩宇','李紫莹','陈紫涵','康艺凡','宋佳壕',
   '陈紫轩','吴昊泽','张楷浩','余泽轩','李文硕','宋羽涵','彭子轩','杨佳瑜','何柯颍',
-  '范桂臣','鲁柯雨','孙昊辰','李紫萱','范樊思羽','王紫凡','韩晨熙','庞静雅','鲁文通',
-  '田诗雯','刘思宇','姬何媛','杨雅童','张嘉彤','周俊泽','庞雨轩','万梓颖','阎紫博','刘阳','鲁文通',
+  '范桂臣','鲁柯雨','孙昊辰','李紫萱','范樊思羽','王紫凡','韩晨熙','庞静雅',
+  '田诗雯','刘思宇','姬何媛','杨雅童','张嘉彤','周俊泽','庞雨轩','万梓颖','阎紫博','刘阳',
   '王昱颉','王子睿','边瑞鑫','何佳辉','韩佑喆',
   '朱浩然','张铭远','陈步凡','曹忱暄','何林鲜','何汶玥',
-  '刘源','丁萌恩','梁帅哲','贺厚铭','贾世龙','冯顺','鲁文通',
+  '刘源','丁萌恩','梁帅哲','贺厚铭','贾世龙','冯顺'
 ];
+
+const DECOYS = ['季刚辉'];
 
 /* ⚠️ 显示人数（如与实际名单不一致，只改这里） */
 const TOTAL_DISPLAY = 63;
@@ -517,16 +578,19 @@ const TOTAL_DISPLAY = 63;
 /* ⏱ 判定悬浮窗延迟弹出时间（毫秒） */
 const JUDGE_DELAY = 5000;
 
-/* ============ 科目 ============ */
+/* ⏱ 欢迎浮层停留时间（毫秒） */
+const WELCOME_HOLD = 1800;
+
+/* ============ 科目（teacher 为各科老师姓名） ============ */
 const SUBJECTS = [
-  { name:'语文', c1:'#ff9a8b', c2:'#ff6a88' },
-  { name:'数学', c1:'#ffd479', c2:'#ff8a4c' },
-  { name:'英语', c1:'#7ee8fa', c2:'#4a8cff' },
-  { name:'生物', c1:'#8ef6a3', c2:'#22b573' },
-  { name:'地理', c1:'#a7c7ff', c2:'#5b7cfa' },
-  { name:'物理', c1:'#c2a3ff', c2:'#7c4dff' },
-  { name:'政治', c1:'#ffc98b', c2:'#f2704a' },
-  { name:'历史', c1:'#ffe08a', c2:'#c99a2e' }
+  { name:'语文', teacher:'赵', c1:'#ff9a8b', c2:'#ff6a88' },
+  { name:'数学', teacher:'沈', c1:'#ffd479', c2:'#ff8a4c' },
+  { name:'英语', teacher:'汪', c1:'#7ee8fa', c2:'#4a8cff' },
+  { name:'生物', teacher:'王', c1:'#8ef6a3', c2:'#22b573' },
+  { name:'地理', teacher:'余',   c1:'#a7c7ff', c2:'#5b7cfa' },
+  { name:'物理', teacher:'郑',   c1:'#c2a3ff', c2:'#7c4dff' },
+  { name:'政治', teacher:'赵',   c1:'#ffc98b', c2:'#f2704a' },
+  { name:'历史', teacher:'张', c1:'#ffe08a', c2:'#c99a2e' }
 ];
 
 /* 每科独立：已抽集合 / 抽取记录 / 答题统计 */
@@ -536,12 +600,16 @@ SUBJECTS.forEach(s => subjectState[s.name] = { drawn:new Set(), history:[], stat
 const state = { current:null, noRepeat:true, count:1, rolling:false };
 
 /* 本次判定相关 */
-let judgeSelection = {};   // name -> 'right' | 'wrong' | null
-let lastPicked = [];       // 最近一次抽取的姓名数组
+let judgeSelection = {};
+let lastPicked = [];
 
 /* 延迟弹出定时器 */
 let judgeTimer = null;
 let judgeCountdownTimer = null;
+
+/* 欢迎浮层定时器 */
+let welcomeTimer = null;
+let welcomeOutTimer = null;
 
 /* ============ DOM ============ */
 const screenSubject = document.getElementById('screenSubject');
@@ -560,6 +628,11 @@ const noRepeatEl    = document.getElementById('noRepeat');
 const resetBtn      = document.getElementById('resetBtn');
 const toastEl       = document.getElementById('toast');
 document.getElementById('totalNum').textContent = TOTAL_DISPLAY;
+
+/* 欢迎浮层 */
+const welcomeEl     = document.getElementById('welcome');
+const welcomeName   = document.getElementById('welcomeName');
+const welcomeSubj   = document.getElementById('welcomeSubj');
 
 /* 判定悬浮窗 */
 const judgeModal  = document.getElementById('judgeModal');
@@ -613,6 +686,30 @@ function fmtTime(d){
 function pct(r, t){ return t ? Math.round(r / t * 100) : 0; }
 function anyModalOpen(){
   return !judgeModal.hidden || !statsModal.hidden || !overviewModal.hidden;
+}
+
+/* ============ 欢迎浮层控制 ============ */
+function clearWelcome(){
+  if(welcomeTimer){ clearTimeout(welcomeTimer); welcomeTimer = null; }
+  if(welcomeOutTimer){ clearTimeout(welcomeOutTimer); welcomeOutTimer = null; }
+  welcomeEl.hidden = true;
+  welcomeEl.classList.remove('out');
+}
+
+function showWelcome(sub){
+  clearWelcome();
+  welcomeName.textContent = sub.teacher || 'XXX';
+  welcomeSubj.textContent = sub.name;
+  welcomeEl.hidden = false;
+  welcomeEl.classList.remove('out');
+
+  welcomeTimer = setTimeout(() => {
+    welcomeEl.classList.add('out');
+    welcomeOutTimer = setTimeout(() => {
+      welcomeEl.hidden = true;
+      welcomeEl.classList.remove('out');
+    }, 560);
+  }, WELCOME_HOLD);
 }
 
 /* ============ 延迟弹出控制 ============ */
@@ -736,11 +833,14 @@ function enterSubject(name){
 
   renderHistory();
   updateStatus();
+
+  showWelcome(sub);
 }
 
 backBtn.addEventListener('click', () => {
   if(state.rolling) return;
   clearJudgeAuto();
+  clearWelcome();
   state.current = null;
   judgeModal.hidden = true;
   screenDraw.hidden = true;
@@ -752,6 +852,10 @@ backBtn.addEventListener('click', () => {
 function getPool(){
   const st = subjectState[state.current];
   return NAMES.filter(n => !(state.noRepeat && st.drawn.has(n)));
+}
+
+function getRollPool(){
+  return getPool().concat(DECOYS);
 }
 
 /* ============ 渲染 ============ */
@@ -877,6 +981,8 @@ function doDraw(){
   hideReopenBtn();
 
   const n = Math.min(state.count, pool.length);
+  const rollPool = getRollPool();
+
   state.rolling = true;
   drawBtn.disabled = true;
   drawBtn.textContent = '抽取中…';
@@ -890,7 +996,7 @@ function doDraw(){
     if(p < 1){
       if(now - lastSwap > 50){
         lastSwap = now;
-        renderNames(shuffle(pool).slice(0, n), 'rolling');
+        renderNames(shuffle(rollPool).slice(0, n), 'rolling');
       }
       requestAnimationFrame(frame);
     }else{
